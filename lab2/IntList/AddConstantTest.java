@@ -18,6 +18,12 @@ public class AddConstantTest {
         IntListExercises.addConstant(lst, 2);
         assertEquals("3 -> 4 -> 5 -> 6 -> 7", lst.toString());
     }
+    @Test
+    public void testAddConstantThree() {
+        IntList lst = IntList.of(-1, 20, 3, 40, 5);
+        IntListExercises.addConstant(lst, 2);
+        assertEquals("1 -> 22 -> 5 -> 42 -> 7", lst.toString());
+    }
 
     @Test
     public void testAddToLargeList() {
@@ -25,4 +31,5 @@ public class AddConstantTest {
         IntListExercises.addConstant(lst, 10);
         assertEquals("11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17 -> 18 -> 19", lst.toString());
     }
+
 }
