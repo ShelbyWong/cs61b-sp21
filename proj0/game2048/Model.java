@@ -1,5 +1,6 @@
 package game2048;
 
+import java.beans.beancontext.BeanContext;
 import java.util.Formatter;
 import java.util.Observable;
 
@@ -109,11 +110,49 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
 
+        // north moves
+        board.setViewingPerspective(side);
+
+        for (int col = 0; col < board.size(); col++) {
+            //moving
+            for (int row = board.size()-1; row>=0; row--) {
+                Tile t=board.tile(col,row);
+                int next=board.size()-1;
+                if (t!=null){
+                    for ( ; next >=0 ; next--) {
+                        if (board.tile(col,next)==null)break;
+                    }
+                    if (next>=row){
+                        board.move(col,next,t);
+                        changed=true;
+                    }
+                }
+            }
+            //merging
+            for (int row = board.size()-1; row >=0; row--) {
+                Tile cur=board.tile(col,row);
+                int nextRow=row-1;
+                if (nextRow<0)break;
+                Tile next=board.tile(col,nextRow);
+                if (cur==null||next==null)break;
+                if (next.value()==cur.value()){
+                    board.move(col,row,next);
+                    score+=2*cur.value();
+                    for (int i = nextRow-1; i >=0; i--) {
+                        Tile temp=board.tile(col,i);
+                        if (temp==null)break;
+                        
+                        board.move(col,i+1,temp);
+                    }
+                }
+                changed=true;
+            }
+        }
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
@@ -138,9 +177,14 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+
+        for (int i=0;i<b.size();i++){
+            for(int j=0;j<b.size();j++){
+                if(b.tile(j,i)==null)return true;
+            }
+        }
         return false;
     }
-
     /**
      * Returns true if any tile is equal to the maximum valid value.
      * Maximum valid value is given by MAX_PIECE. Note that
@@ -148,6 +192,14 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        int max=0;
+        for (int i=0;i<b.size();i++){
+            for(int j=0;j<b.size();j++){
+                if(b.tile(j,i)!=null&&b.tile(j,i).value()==MAX_PIECE) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -157,8 +209,35 @@ public class Model extends Observable {
      * 1. There is at least one empty space on the board.
      * 2. There are two adjacent tiles with the same value.
      */
+
+    public static boolean isOutOfRange(int col,int row,int size){
+        return col<0||row<0||col>=size||row>=size;
+    }
+
+    public static boolean atLeastOneMoveExistsHelper(Board b,int col,int row){
+        for (int i = 0; i < 4; i++) {
+            switch (i){
+                case 0:if (!isOutOfRange(col-1,row,b.size())&&b.tile(col,row).value()==b.tile(col-1,row).value())return true;
+                case 1:if (!isOutOfRange(col+1,row,b.size())&&b.tile(col,row).value()==b.tile(col+1,row).value())return true;
+                case 2:if (!isOutOfRange(col,row-1,b.size())&&b.tile(col,row).value()==b.tile(col,row-1).value())return true;
+                case 3:if (!isOutOfRange(col,row+1,b.size())&&b.tile(col,row).value()==b.tile(col,row+1).value())return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        //has at least one empty space
+        if(emptySpaceExists(b))return true;
+
+        //adjacent tiles are same value
+        for(int i=0;i<b.size();i++){
+            for(int j=0;j<b.size();j++){
+
+                if(atLeastOneMoveExistsHelper(b,j,i))return true;
+            }
+        }
         return false;
     }
 

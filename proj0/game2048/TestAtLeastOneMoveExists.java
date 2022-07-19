@@ -3,7 +3,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/** Tests the atLeastOneMoveExists() static method of Model.
+/** Tests the MoveExists() static method of Model.
  *
  * You shouldn't expect to pass these tests until you're passing all the tests
  * in TestEmptySpace.
