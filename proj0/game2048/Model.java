@@ -145,7 +145,6 @@ public class Model extends Observable {
                     for (int i = nextRow-1; i >=0; i--) {
                         Tile temp=board.tile(col,i);
                         if (temp==null)break;
-                        
                         board.move(col,i+1,temp);
                     }
                 }
