@@ -15,14 +15,14 @@ public class TestBuggyAList {
         AListNoResizing<Integer> correct = new AListNoResizing<>();
         BuggyAList<Integer> buggy = new BuggyAList<>();
 
-        for (int i = 4; i <= 6; i++) {
-            correct.addLast(i);
-            buggy.addLast(i);
-        }
+        correct.addLast(5);
+        correct.addLast(10);
+        correct.addLast(15);
+
+        buggy.addLast(5);
+        buggy.addLast(10);
+        buggy.addLast(15);
         assertEquals(correct.size(),buggy.size());
-
-
-
         assertEquals(correct.removeLast(),buggy.removeLast());
         assertEquals(correct.removeLast(),buggy.removeLast());
         assertEquals(correct.removeLast(),buggy.removeLast());
