@@ -1,66 +1,60 @@
 package deque;
 
+
 import java.util.Iterator;
 
-
-public class LinkedListDeque<T> implements Deque<T>{
-
-
-    //node class doesn't access any method of LinkedListDeque
-    private static class Node<T>{
-        //For private nested classes, access modifiers are irrelevant
-        T item;
-        Node<T> next;
-        Node<T> pre;
-
-        public Node() {
-            T item=null;
-            next=null;
-            pre=null;
-        }
-
-        public Node(T item) {
-            this.item = item;
-        }
-    }
-
-    private  class LinkedDequeIterator<T> implements Iterator<T>{
-        Node<T> cur;
-
-        public LinkedDequeIterator() {
-            cur = (Node<T>) sentinel;
-        }
-
-        @Override
-        public boolean hasNext() {
-
-            return cur.next != null;
-        }
-
-        @Override
-        public T next() {
-            cur=cur.next;
-            return cur.item;
-        }
-    }
-
-    private int size;
+public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
+    private  int size;
     private Node<T> sentinel;
 
     public LinkedListDeque() {
         size=0;
-        sentinel=new Node<T>();//head node
-        sentinel.next=null;
-        sentinel.pre=null;
+        sentinel=new Node<T>();
+        sentinel.pre=sentinel;
+        sentinel.next=sentinel;
+    }
+
+
+    private static class  Node<T>{
+        T data;
+        Node<T> next;
+        Node<T> pre;
+        public Node() {
+            data =null;
+            next=null;
+            pre=null;
+        }
+
+        public Node(T info) {
+            this.data = info;
+            next=null;
+            pre=null;
+        }
+    }
+    private class LLDIterator implements Iterator<T>{
+        Node<T> index;
+
+        public LLDIterator() {
+            this.index = sentinel;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index.next!=sentinel;
+        }
+
+        @Override
+        public T next() {
+            index=index.next;
+            return index.data;
+        }
     }
 
     @Override
     public void printDeque() {
-        int count=0;
         Iterator<T> iterator = iterator();
         System.out.print("{");
         while (iterator.hasNext()){
-            if (count++==size)break;
             System.out.print(iterator.next()+",");
         }
         System.out.print("}");
@@ -69,46 +63,36 @@ public class LinkedListDeque<T> implements Deque<T>{
     @Override
     public void addFirst(T item) {
         Node<T> tNode = new Node<>(item);
-//base case: no node in deque
-        if (sentinel.next==null){
-            sentinel.next=tNode;
-//            tNode.next=sentinel.next;
-            tNode.pre=sentinel;
-            sentinel.pre=tNode;
-            size++;
-            return;
+        if (size==0) {
+            sentinel.pre = tNode;
         }
-        //change the reference
-        tNode.next=sentinel.next;
+        tNode.pre=sentinel;
+        tNode.next=sentinel.next.next;
         sentinel.next.pre=tNode;
         sentinel.next=tNode;
-        tNode.pre=sentinel;
-        sentinel.pre.next=tNode;
+
+
         size++;
     }
 
     @Override
     public void addLast(T item) {
         Node<T> tNode = new Node<>(item);
-        //base case: no node in deque
-    if (sentinel.next==null){
-        sentinel.next=tNode;
-        sentinel.pre=tNode;
-        tNode.pre=sentinel;
-        size++;
-        return;
-    }
-    //change the reference
+        if (size==0) {
+            sentinel.next = tNode;
+        }
+        tNode.next=sentinel;
         tNode.pre=sentinel.pre;
         sentinel.pre.next=tNode;
         sentinel.pre=tNode;
-        tNode.next=sentinel.next;
+
+
         size++;
     }
 
     @Override
     public boolean isEmpty() {
-        return size == 0;
+        return size==0;
     }
 
     @Override
@@ -118,56 +102,61 @@ public class LinkedListDeque<T> implements Deque<T>{
 
     @Override
     public T removeFirst() {
-        if (sentinel.next==null)return null;
-        Node<T> tNode = sentinel.next;
-        //base case:only one node is in the deque
-        if (sentinel.pre==sentinel.next){
-            sentinel.next=null;
-            sentinel.pre=null;
-            size--;
-            return tNode.item;
-        }
+        if (size==0)return null;
+        Node<T> tNode= sentinel.next;
         sentinel.next=tNode.next;
-        tNode.pre=sentinel;
+        tNode.next.pre=sentinel;
+
         size--;
-        return tNode.item;
+        return tNode.data;
     }
 
     @Override
     public T removeLast() {
-        if (sentinel.pre==null)return null;
+        if (size==0)return null;
         Node<T> tNode=sentinel.pre;
-        //base case:only one node is in the deque
-        if (sentinel.pre==sentinel.next){
-            sentinel.next=null;
-            sentinel.pre=null;
-            size--;
-            return tNode.item;
-        }
         tNode.pre.next=sentinel.next;
         sentinel.pre=tNode.pre;
-        tNode.pre=null;
+
         size--;
-        return tNode.item;
+
+        return tNode.data;
     }
+
     @Override
     public T get(int index) {
-        Node<T> tNode=sentinel.next;
-        int tmp=1;
-        while (tNode!=null&&tmp!=index){
-            tNode=tNode.next;
-            tmp++;
+        int count=0;
+        if (index>size)return null;
+        Node<T> tNode = sentinel;
+
+        while (true){
+            if (count==index){
+                return tNode.data;
+            }
+            count++;
         }
-        if (tNode==null){
-            System.out.println("null pointer");
-            return null;
-        }
-        return tNode.item;
+
     }
+
+
     @Override
     public Iterator<T> iterator() {
-        return new LinkedDequeIterator<>();
+        return  new LLDIterator();
     }
-    
+
+
+    @Override
+    public boolean equals(Object o){
+        if (o==null)return false;
+        else if (o==this)return true;
+        else if (!(o instanceof LinkedListDeque))return false;
+
+        LinkedListDeque<T> lld = (LinkedListDeque<T>) o;
+        if (lld.size!=this.size)return false;
+        for (int i = 0; i < size; i++) {
+            if (lld.get(i)!=this.get(i))return false;
+        }
+        return true;
+    }
 
 }

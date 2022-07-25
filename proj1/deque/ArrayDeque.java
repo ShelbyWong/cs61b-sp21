@@ -3,112 +3,81 @@ package deque;
 import java.util.Iterator;
 
 public class ArrayDeque<T> implements Deque<T>{
-    private class DequeIterator<T> implements  Iterator<T>{
-        private int pos;
-
-        public DequeIterator (){
-            pos=front;
-        }
+    private T items[] = (T[]) new Object[8];
+    private int size;
+    private int nextFirst;
+    private int nextLast;
+    private class ADIterator implements Iterator<T>{
+        private int pointer=(nextFirst+1)%items.length;
 
         @Override
         public boolean hasNext() {
-            return pos!=end;
+            return size>0;
         }
 
         @Override
         public T next() {
-            T res= (T) items[pos];
-            pos=(pos+1+items.length)%items.length;
-            return res;
+            System.out.print(items[pointer]);
+            pointer=(pointer+1)%items.length;
+            return null;
         }
     }
-
-    private T[] items;
-    private int size;
-    private int front;
-    private int end;
 
     public ArrayDeque() {
-        items= (T[])new Object[8];
-        end=front=items.length/2;
-        size=0;
+        int size=0;
+        nextFirst=items.length/2;
+        nextLast=items.length/2+1;
     }
 
-    public ArrayDeque(int size){
-        items= (T[])new Object[size];
-        end=front=items.length/2;
-        this.size=0;
+    @Override
+    public void printDeque() {
+
     }
 
-    //constant time
     @Override
     public void addFirst(T item) {
-        if (size==items.length){
-            resize((int) (size*1.5));
+        if (size== items.length){
+            resize((int)(size*1.5));
         }
-
-        front=(front-1+items.length)%items.length;
-        items[front]=item;
+        items[nextFirst]=item;
         size++;
-    }
-
-    public void resize(int size){
-        T[] a = (T[]) new Object[size];
-        //reduce size
-        if (this.size>size) {
-            if (front < end) {
-                System.arraycopy(items, front, a, front, size);
-            } else {
-                int i = front + size - items.length;
-                int j = front;
-                int tmp=this.size;
-                while (tmp > 0) {
-                    a[i] = items[j];
-                    i = (i + 1) % a.length;
-                    j = (j + 1) % items.length;
-                    tmp--;
-                }
-            }
-        }
-
-        //expand the size
-        else{
-            if (front<end){
-                System.arraycopy(items,front,a,front,size);
-                //There is no need to modify front and end index
-            }else {
-                int i=front+size- items.length;
-                int j=front;
-                while (this.size>0){
-                    a[i]=items[j];
-                    i=(i+1)%a.length;
-                    j=(j+1)%items.length;
-                    this.size--;
-                }
-
-
-            }
-
-        }
-        items = a;
+        nextFirst=(nextFirst-1+ items.length)% items.length;
 
     }
-
-    //constant time,except array resizing
     @Override
     public void addLast(T item) {
-        //resizing
-        if (size==items.length){
-            resize((int) (size*1.5));
+        if (size== items.length){
+            resize((int)(size*1.5));
         }
-        items[end]=item;
-        end=(end+1+items.length)%items.length;
+        items[nextLast]=item;
         size++;
+        nextLast=(nextLast+1+ items.length)% items.length;
     }
+
+    public void resize(int newSize){
+        T[] a = (T[])new Object[newSize];
+        int i=0;
+        int j=(nextFirst+1)%items.length;
+
+        int tmp=size;
+        if (newSize>size){
+            while (tmp>0){
+                a[i]=items[j];
+                j=(j+1)%items.length;
+                i+=1;
+                tmp--;
+            }
+        }
+        nextFirst=a.length-1;
+        nextLast=size;
+        items=a;
+    }
+
+
 
     @Override
     public boolean isEmpty() {
-        return size == 0;
+        return size==0;
     }
 
     @Override
@@ -118,46 +87,31 @@ public class ArrayDeque<T> implements Deque<T>{
 
     @Override
     public T removeFirst() {
-        if (size==0)return null;
-        int index=front;
+        if (isEmpty())return null;
+        nextFirst=(nextFirst+1)% items.length;
+        T item=items[nextFirst];
         size--;
-        front=(front+1)%items.length;
-        return items[index];
+        return item;
     }
 
     @Override
     public T removeLast() {
-        if (size==0)return null;
-        int index=end;
+        if(isEmpty())return null;
+        nextLast=(nextLast-1)% items.length;
+        T item=items[nextLast];
         size--;
-        end=(end-1)% items.length;
-        return items[index];
+        return item;
     }
 
-    /**
-     *
-     * @param index: 0 is the front, 1 is the next item, and so forth
-     * @return
-     */
     @Override
     public T get(int index) {
-        if (index<0||index>items.length)return null;
-
-        return items[(front+index)% items.length];
-    }
-
-    @Override
-    public void printDeque() {
-        System.out.print("{");
-        Iterator<T> tDequeIterator = iterator();
-        while ((tDequeIterator.hasNext())){
-            System.out.print(tDequeIterator.next()+",");
-        }
-        System.out.println("}");
+        if (index>size-1||index<0)return null;
+        int relativeIndex=(nextFirst+1+index)% items.length;
+        return items[relativeIndex];
     }
 
     @Override
     public Iterator<T> iterator() {
-        return new DequeIterator<T>();
+        return new ADIterator();
     }
 }
