@@ -6,7 +6,9 @@ public interface Deque<T> {
     void printDeque();
     void addFirst(T item);
     void addLast(T item);
-    boolean isEmpty();
+    default boolean isEmpty(){
+        return size()==0;
+    }
     int size();
     T removeFirst();
     T removeLast();
