@@ -3,6 +3,7 @@ package deque;
 import java.util.Iterator;
 
 public class ArrayDeque<T> implements Deque<T>{
+    @SuppressWarnings("unchecked")
     private T items[] = (T[]) new Object[8];
     private int size;
     private int nextFirst;
@@ -40,7 +41,7 @@ public class ArrayDeque<T> implements Deque<T>{
             resize((int)(size*1.5));
         }
         items[nextFirst]=item;
-        size++;
+        size+=1;
         nextFirst=(nextFirst-1+ items.length)% items.length;
 
     }
