@@ -12,7 +12,7 @@ public class TestArrayDequeEC {
     @Test
     public void test1(){
         StudentArrayDeque<Integer> sad =  new StudentArrayDeque<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             double uniform = i*StdRandom.uniform();
 
             if ((int)uniform<i/2){
@@ -27,15 +27,16 @@ public class TestArrayDequeEC {
     @Test
     public void test2(){
         StudentArrayDeque<Integer> sad =  new StudentArrayDeque<>();
+        for (int i = 1; i < 100; i++) {
+            int expected =StdRandom.uniform(i);
+            sad.addFirst(expected);
+            int actual = sad.removeFirst();
+            assertEquals("addFirst("+expected+")"+'\n'+
+                            "removeFirst()"+'\n',
+                                expected,
+                                actual);
+        }
 
-        for (int i = 0; i < 1000; i++) {
-            sad.addLast(i);
-        }
-        for (int i = 0; i < 1000; i++) {
-            if (!sad.isEmpty()) {
-                assertEquals("should be ", i, sad.removeFirst());
-            }
-        }
     }
 
 }
