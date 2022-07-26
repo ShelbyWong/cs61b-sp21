@@ -9,35 +9,47 @@ import student.StudentArrayDeque;
 
 public class TestArrayDequeEC {
 
-    @Test
-    public void test1(){
-        StudentArrayDeque<Integer> sad =  new StudentArrayDeque<>();
-
-        int expected = 20;
-        sad.addFirst(expected);
-        int actual = StdRandom.uniform(6);
-
-        assertEquals("addFirst("+expected+")"+'\n'+
-                        "removeFirst()"+'\n',
-                expected,
-                actual);
-    }
 
     @Test
-    public void test2(){
-        StudentArrayDeque<Integer> sad =  new StudentArrayDeque<>();
-        for (int i = 1; i < 10000; i++) {
-            int expected1 =StdRandom.uniform(i);
-            sad.addFirst(expected1);
-            int expected2 =StdRandom.uniform(i);
-            sad.addFirst(expected2);
-            int actual = sad.removeFirst();
-            assertEquals("addFirst("+expected1+")"+'\n'+
-                            "removeFirst()"+'\n',
-                                expected1,
-                                actual);
+    public void test(){
+
+        StudentArrayDeque<Integer> st = new StudentArrayDeque<>();
+        ArrayDequeSolution<Integer> ad = new ArrayDequeSolution<>();
+
+        int n;
+        String s = "";
+        for (int i = 0; i < 1000; i++) {
+            int opt = StdRandom.uniform(0,4);
+            switch (opt){
+                case 0:
+                    n = StdRandom.uniform(0, 100);
+                    st.addFirst(n);
+                    ad.addFirst(n);
+                    s += "addFirst(" + n + ")\n";
+                    break;
+                case 1:
+                    // addLast
+                     n = StdRandom.uniform(0, 100);
+                    st.addLast(n);
+                    ad.addLast(n);
+                    s += "addLast(" + n + ")\n";
+                    break;
+                case 2:
+                    if (st.isEmpty()){
+                        continue;
+                    }
+                    s += "removeFirst()\n";
+                    assertEquals(s, ad.removeFirst(), st.removeFirst());
+                    break;
+                case 3:
+                    if (st.isEmpty()){
+                        continue;
+                    }
+                    s += "removeLast()\n";
+                    assertEquals(s, ad.removeLast(), st.removeLast());
+            }
+
         }
-
     }
 
 }
