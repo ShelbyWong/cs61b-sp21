@@ -139,12 +139,12 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
         }
         return true;
     }
-    public T getRecursion(int index){
+    public T getRecursive(int index){
         if (index<0||index>size-1)return null;
-        return getRecursionHelper(index,sentinel.next);
+        return getRecursiveHelper(index,sentinel.next);
     }
-    public T getRecursionHelper(int index,Node<T> cur){
+    public T getRecursiveHelper(int index,Node<T> cur){
         if (index==0)return cur.data;
-        return getRecursionHelper(index-1,cur.next);
+        return getRecursiveHelper(index-1,cur.next);
     }
 }

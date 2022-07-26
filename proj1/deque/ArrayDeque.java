@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> implements Deque<T>{
+public class ArrayDeque<T> implements Deque<T>,Iterable<T>{
     @SuppressWarnings("unchecked")
     private T items[] = (T[]) new Object[8];
     private int size;
@@ -25,7 +25,7 @@ public class ArrayDeque<T> implements Deque<T>{
     }
 
     public ArrayDeque() {
-        int size=0;
+        int size = 0;
         nextFirst=items.length/2;
         nextLast=items.length/2+1;
     }
