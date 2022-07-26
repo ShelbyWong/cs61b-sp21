@@ -1,6 +1,4 @@
 package deque;
-
-
 import java.util.Iterator;
 
 public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
@@ -122,7 +120,7 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
     public T get(int index) {
         int count=0;
         if (index>size)return null;
-        Node<T> tNode = sentinel;
+        Node<T> tNode = sentinel.next;
 
         while (true){
             if (count==index){
@@ -147,7 +145,7 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
         else if (!(o instanceof LinkedListDeque))return false;
 
         LinkedListDeque<T> lld = (LinkedListDeque<T>) o;
-        if (lld.size!=this.size)return false;
+        if (lld.size()!=this.size)return false;
         for (int i = 0; i < size; i++) {
             if (lld.get(i)!=this.get(i))return false;
         }
