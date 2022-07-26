@@ -21,17 +21,17 @@ public class MaxArrayDeque<T> extends ArrayDeque<T>{
     public T max(){
         return max(comparator);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o==null)return false;
-        if (!(o instanceof MaxArrayDeque))return false;
-        if (((MaxArrayDeque<T>)o).max()!=max()) {
-            return false;
-        }
-        return super.equals(o);
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o==null)return false;
+//        if (!(o instanceof MaxArrayDeque))return false;
+//        if (((MaxArrayDeque<T>)o).max()!=max()) {
+//            return false;
+//        }
+//        return super.equals(o);
+//    }
 
 
 }
